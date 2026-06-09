@@ -611,7 +611,7 @@
         <div class="stats-grid">
           <div class="stat-box"><div class="stat-n">3+</div><div class="stat-l">Prod ML</div></div>
           <div class="stat-box"><div class="stat-n">0.91</div><div class="stat-l">AUC-ROC</div></div>
-          <div class="stat-box"><div class="stat-n">6+</div><div class="stat-l">Certs</div></div>
+          <div class="stat-box"><div class="stat-n">3+</div><div class="stat-l">Certs</div></div>
           <div class="stat-box"><div class="stat-n">8.08</div><div class="stat-l">CGPA</div></div>
         </div>
       </div>
@@ -717,107 +717,116 @@
     <p class="sec-desc">Each project is structured around business problem, analytical solution, and measurable impact.</p>
     <div class="proj-grid stagger">
 
-      <!-- Project 1 -->
+      <!-- Project 1 — AI Loan Default Prediction -->
       <div class="proj-card">
         <div class="proj-head">
-          <div class="proj-type">Featured Build &middot; Machine Learning</div>
-          <div class="proj-name">E-Commerce Product Delivery Prediction</div>
-          <div class="proj-date"><i class="fas fa-calendar"></i> May 2025 – June 2025</div>
+          <div class="proj-type">Featured Build &middot; FinTech ML + MLOps</div>
+          <div class="proj-name">AI-Based Loan Default Prediction</div>
+          <div class="proj-date"><i class="fas fa-calendar"></i> Mar 2026 – May 2026</div>
         </div>
         <div class="proj-body">
           <div class="pills">
-            <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Seaborn</span><span class="tag">Scikit-learn</span>
+            <span class="tag">XGBoost</span><span class="tag">LightGBM</span><span class="tag">SMOTE</span>
+            <span class="tag">SHAP</span><span class="tag">Flask</span><span class="tag">MySQL</span>
+            <span class="tag">Pandas</span><span class="tag">Seaborn</span>
           </div>
           <div class="inset-card">
             <div class="inset-title">Problem</div>
-            <div class="inset-txt">E-commerce companies need to predict on-time delivery to optimise logistics and customer satisfaction without juggling multiple data sources.</div>
+            <div class="inset-txt">Financial institutions struggle to accurately identify loan defaulters in class-imbalanced datasets, leading to costly misclassifications and regulatory audit challenges.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Solution</div>
-            <div class="inset-txt">Built a Decision Tree predictive model analysing 7,500 customer behaviour and logistics entries with a full EDA pipeline and feature visualisations.</div>
+            <div class="inset-txt">Trained an XGBoost + LightGBM ensemble on a class-imbalanced loan dataset; SMOTE oversampling lifted minority-class recall by 18% over a logistic regression baseline. Integrated SHAP explainability to meet GDPR auditability requirements.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Impact</div>
-            <div class="inset-txt">Delivered actionable delivery-delay predictions with 88% accuracy, enabling logistics teams to proactively intervene for at-risk shipments.</div>
+            <div class="inset-txt">Deployed as a Flask REST API on a MySQL borrower database, serving real-time default probabilities. SHAP ranked the top 5 risk drivers per borrower prediction for transparent decision support.</div>
           </div>
           <div style="font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">Metrics</div>
           <ul class="checklist">
-            <li>88% prediction accuracy on test set</li>
-            <li>7,500 customer behaviour entries analysed</li>
-            <li>Full EDA + visualisation pipeline built</li>
+            <li>AUC-ROC: 0.91 on test set</li>
+            <li>+18% minority-class recall via SMOTE oversampling</li>
+            <li>SHAP explainability — GDPR-audit ready</li>
+            <li>Flask REST API deployed on MySQL borrower DB</li>
           </ul>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem;">
-            <a href="https://github.com/Ashwani4545/E_commerceProductDeliveryPrediction" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://github.com/Ashwani4545/AI-Based-Loan-Default-Prediction" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
           </div>
         </div>
       </div>
 
-      <!-- Project 2 -->
+      <!-- Project 2 — SaaS AI Risk Platform -->
       <div class="proj-card">
         <div class="proj-head">
-          <div class="proj-type">Case Study &middot; Healthcare ML</div>
-          <div class="proj-name">Breast Cancer Prediction</div>
-          <div class="proj-date"><i class="fas fa-calendar"></i> March 2025 – April 2025</div>
+          <div class="proj-type">Case Study &middot; SaaS Platform + MLOps</div>
+          <div class="proj-name">SaaS AI Risk Platform</div>
+          <div class="proj-date"><i class="fas fa-calendar"></i> Dec 2025 – Mar 2026</div>
         </div>
         <div class="proj-body">
           <div class="pills">
-            <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">Matplotlib</span><span class="tag">Data Preprocessing</span>
+            <span class="tag">Python</span><span class="tag">XGBoost</span><span class="tag">FastAPI</span>
+            <span class="tag">MLflow</span><span class="tag">Docker</span><span class="tag">PostgreSQL</span>
+            <span class="tag">A/B Testing</span><span class="tag">Vector Search</span>
           </div>
           <div class="inset-card">
             <div class="inset-title">Problem</div>
-            <div class="inset-txt">Early and accurate diagnosis of breast cancer is critical to improving patient survival rates; manual screening is error-prone.</div>
+            <div class="inset-txt">Businesses lacked a unified platform to identify, analyse, and manage business, security, and compliance risks in real time — relying on manual, siloed processes.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Solution</div>
-            <div class="inset-txt">Applied Logistic Regression and multiple classification algorithms on the Wisconsin Breast Cancer dataset with cross-validation and feature selection.</div>
+            <div class="inset-txt">Developed an AI-powered SaaS platform with FastAPI + Docker microservices, MLflow experiment tracking, and a vector similarity search engine. Built an A/B testing framework for parallel model evaluation with statistical significance testing.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Impact</div>
-            <div class="inset-txt">Achieved 95–97% diagnostic accuracy, directly improving decision support for medical professionals in distinguishing malignant from benign cases.</div>
+            <div class="inset-txt">Faster risk detection, improved decision-making, enhanced regulatory compliance, and reduced business vulnerabilities through intelligent real-time risk assessment.</div>
           </div>
           <div style="font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">Metrics</div>
           <ul class="checklist">
-            <li>Accuracy: 95–97%</li>
-            <li>Logistic Regression + ensemble models</li>
-            <li>Production-grade preprocessing pipeline</li>
+            <li>A/B testing framework with statistical significance validation</li>
+            <li>MLflow experiment tracking + model versioning</li>
+            <li>Dockerised microservices with CI/CD pipeline</li>
+            <li>Vector similarity search for risk pattern detection</li>
           </ul>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem;">
-            <a href="https://github.com/Ashwani4545/BreastCancerPrediction" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://github.com/Ashwani4545/saas-ai-risk-platform" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
           </div>
         </div>
       </div>
 
-      <!-- Project 3 -->
+      <!-- Project 3 — Brain Region Segmentation -->
       <div class="proj-card">
         <div class="proj-head">
-          <div class="proj-type">Case Study &middot; Time-Series ML</div>
-          <div class="proj-name">Traffic Flow Prediction</div>
-          <div class="proj-date"><i class="fas fa-calendar"></i> Feb 2025 – March 2025</div>
+          <div class="proj-type">Case Study &middot; Medical Imaging + Deep Learning</div>
+          <div class="proj-name">Brain Region Segmentation</div>
+          <div class="proj-date"><i class="fas fa-calendar"></i> Sep 2025 – Dec 2025</div>
         </div>
         <div class="proj-body">
           <div class="pills">
-            <span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Matplotlib</span><span class="tag">Seaborn</span>
+            <span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">Keras</span>
+            <span class="tag">CNN</span><span class="tag">Transfer Learning</span><span class="tag">OpenCV</span>
+            <span class="tag">Dice Loss</span><span class="tag">NumPy</span>
           </div>
           <div class="inset-card">
             <div class="inset-title">Problem</div>
-            <div class="inset-txt">Urban planners needed predictive traffic insights for smart city infrastructure without expensive sensor deployment.</div>
+            <div class="inset-txt">Pixel-level detection of strokes and cerebral oedema in NCCT scans is critical for triage — but severe foreground-background class imbalance and limited annotated data make it extremely challenging.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Solution</div>
-            <div class="inset-txt">Developed a traffic flow prediction model using Random Forest with engineered time-based features (hour, day, holiday flags) for pattern recognition.</div>
+            <div class="inset-txt">Constructed a CNN encoder-decoder with transfer learning for pixel-level lesion detection. Replaced cross-entropy with a custom Dice Loss to resolve class imbalance, surpassing the baseline UNet F1-score on constrained annotated data.</div>
           </div>
           <div class="inset-card">
             <div class="inset-title">Impact</div>
-            <div class="inset-txt">Delivered high-interpretability urban mobility insights that can inform traffic signal timing and congestion management decisions.</div>
+            <div class="inset-txt">Validated outputs against radiologist annotations across 200+ scans; precision-recall analysis confirmed near-specialist-level accuracy for stroke triage support.</div>
           </div>
           <div style="font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">Metrics</div>
           <ul class="checklist">
-            <li>Random Forest with time-based feature engineering</li>
-            <li>High interpretability for smart city use cases</li>
-            <li>Optimised urban mobility insights</li>
+            <li>200+ scans validated against radiologist annotations</li>
+            <li>Custom Dice Loss — outperformed baseline UNet F1</li>
+            <li>Near-specialist-level stroke triage accuracy</li>
+            <li>Transfer learning on constrained annotated dataset</li>
           </ul>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:auto;padding-top:.5rem;">
-            <a href="https://github.com/Ashwani4545/TrafficFlowPrediction" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
+            <a href="https://github.com/Ashwani4545/brain-region-segmentation-ML" target="_blank" class="btn" style="font-size:.95rem;"><i class="fab fa-github"></i> Code</a>
           </div>
         </div>
       </div>
@@ -838,57 +847,30 @@
     <div class="certs-grid stagger">
 
       <div class="scard cert-card" style="background:var(--blue-sticky);">
+        <div class="cert-icon"><i class="fas fa-database"></i></div>
+        <div class="cert-title">SQL and Relational Databases 101</div>
+        <div class="cert-issuer"><i class="fas fa-building"></i> IBM Cognitive Classes</div>
+        <div class="cert-date"><i class="fas fa-calendar"></i> Sep 2025</div>
+        <div class="cert-desc">Fundamental concepts of SQL and relational database management, including queries, joins, subqueries, and database design principles applied to real datasets.</div>
+        <a href="https://courses.cognitiveclass.ai/certificates/6e6ecc18717941bda601c99c82b98e1c" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
+      </div>
+
+      <div class="scard cert-card" style="background:var(--blue-sticky);">
         <div class="cert-icon"><i class="fas fa-certificate"></i></div>
         <div class="cert-title">Python 101 for Data Science</div>
         <div class="cert-issuer"><i class="fas fa-building"></i> IBM Cognitive Class</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> March 2024</div>
-        <div class="cert-desc">Comprehensive introduction to Python programming for data science, covering data structures, libraries, and analysis techniques.</div>
+        <div class="cert-date"><i class="fas fa-calendar"></i> Mar 2024</div>
+        <div class="cert-desc">Comprehensive introduction to Python programming for data science, covering data structures, Pandas, NumPy, and analysis techniques used in production pipelines.</div>
         <a href="https://courses.cognitiveclass.ai/certificates/b46d2c88f4b34d02b9130fd3ac8eceaa" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
-      </div>
-
-      <div class="scard cert-card" style="background:var(--blue-sticky);">
-        <div class="cert-icon"><i class="fas fa-chart-bar"></i></div>
-        <div class="cert-title">Data Visualisation with R</div>
-        <div class="cert-issuer"><i class="fas fa-building"></i> IBM Cognitive Class</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> March 2024</div>
-        <div class="cert-desc">Advanced data visualisation techniques using R, including ggplot2, interactive visualisations, and statistical graphics.</div>
-        <a href="https://courses.cognitiveclass.ai/certificates/c4f2a1d2a9ef47d6b644af02258b56a5" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
-      </div>
-
-      <div class="scard cert-card" style="background:var(--blue-sticky);">
-        <div class="cert-icon"><i class="fas fa-database"></i></div>
-        <div class="cert-title">SQL and Relational Databases 101</div>
-        <div class="cert-issuer"><i class="fas fa-building"></i> IBM Cognitive Class</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> September 2024</div>
-        <div class="cert-desc">Fundamental concepts of SQL and relational database management, including queries, joins, and database design principles.</div>
-        <a href="https://courses.cognitiveclass.ai/certificates/6e6ecc18717941bda601c99c82b98e1c" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
       </div>
 
       <div class="scard cert-card" style="background:var(--blue-sticky);">
         <div class="cert-icon"><i class="fab fa-microsoft"></i></div>
         <div class="cert-title">Data Analysis</div>
-        <div class="cert-issuer"><i class="fas fa-building"></i> Microsoft &amp; LinkedIn</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> August 2025</div>
-        <div class="cert-desc">Professional certification covering data analysis methodologies, statistical analysis, and business intelligence techniques.</div>
+        <div class="cert-issuer"><i class="fas fa-building"></i> Microsoft &amp; LinkedIn Learning</div>
+        <div class="cert-date"><i class="fas fa-calendar"></i> Aug 2024</div>
+        <div class="cert-desc">Professional certification covering data analysis methodologies, statistical thinking, business intelligence techniques, and data-driven decision-making workflows.</div>
         <a href="https://www.linkedin.com/learning/certificates/f96ec50d933e6f71be019fa136ebb08e0be6f84d81b06a0d83fa137d272b0618" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
-      </div>
-
-      <div class="scard cert-card" style="background:var(--blue-sticky);">
-        <div class="cert-icon"><i class="fas fa-laptop-code"></i></div>
-        <div class="cert-title">Software Engineering</div>
-        <div class="cert-issuer"><i class="fas fa-building"></i> Saylor Academy</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> November 2024</div>
-        <div class="cert-desc">Comprehensive software engineering principles, development methodologies, and best practices for building scalable applications.</div>
-        <a href="#" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
-      </div>
-
-      <div class="scard cert-card" style="background:var(--blue-sticky);">
-        <div class="cert-icon"><i class="fas fa-sitemap"></i></div>
-        <div class="cert-title">Data Structures and Algorithms</div>
-        <div class="cert-issuer"><i class="fas fa-building"></i> GeeksforGeeks</div>
-        <div class="cert-date"><i class="fas fa-calendar"></i> June 2024</div>
-        <div class="cert-desc">Advanced understanding of data structures, algorithmic problem-solving, and optimisation techniques for efficient programming.</div>
-        <a href="#" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-external-link-alt"></i> View Certificate</a>
       </div>
 
     </div>
@@ -928,7 +910,7 @@
         <div class="edu-num">3</div>
         <div class="edu-content">
           <div class="edu-degree">Bachelor of Computer Application (BCA)</div>
-          <div class="edu-inst">Lovely Professional University, Punjab</div>
+          <div class="edu-inst">Lovely Professional University, Jalandhar, Punjab</div>
           <div class="edu-year"><i class="fas fa-calendar-alt"></i> 2022 – 2025</div>
           <div class="edu-det">Major: Data Science &amp; IoT &middot; Focus on Data Science, Machine Learning, Embedded Systems and Software Development</div>
           <span class="edu-badge"><i class="fas fa-star"></i> CGPA: 8.00 / 10</span>
@@ -939,10 +921,10 @@
         <div class="edu-num">4</div>
         <div class="edu-content">
           <div class="edu-degree">Masters of Computer Application (MCA)</div>
-          <div class="edu-inst">Lovely Professional University, Punjab</div>
+          <div class="edu-inst">Lovely Professional University, Jalandhar, Punjab</div>
           <div class="edu-year"><i class="fas fa-calendar-alt"></i> 2025 – 2027 (Expected)</div>
           <div class="edu-det">Major: Data Science &amp; IoT &middot; Focus on Data Science, Machine Learning, Embedded Systems and Software Development</div>
-          <span class="edu-badge"><i class="fas fa-clock"></i> In Progress</span>
+          <span class="edu-badge"><i class="fas fa-star"></i> TGPA: 8.08</span>
         </div>
       </div>
 
@@ -960,7 +942,7 @@
       <div class="sticky-g ach-card">
         <div class="ach-date"><i class="fas fa-calendar"></i> April 2024</div>
         <div class="ach-title">Dean's Top 10% Students at LPU</div>
-        <div class="ach-desc">Recognised for academic excellence and active participation in university-level events throughout the academic year, placing in the top decile of my cohort.</div>
+        <div class="ach-desc">Recognised for academic excellence and active participation in university-level events throughout the academic year, placing in the top decile of the cohort.</div>
       </div>
 
       <div class="sticky-g ach-card">
@@ -970,15 +952,15 @@
       </div>
 
       <div class="sticky-g ach-card">
-        <div class="ach-date"><i class="fas fa-calendar"></i> 2022 – Present</div>
-        <div class="ach-title">50+ Data Projects Completed</div>
-        <div class="ach-desc">Consistently delivering real-world analytical models and dashboards, gaining hands-on experience across ML, EDA, statistical modelling and visualisation.</div>
+        <div class="ach-date"><i class="fas fa-calendar"></i> Mar 2026</div>
+        <div class="ach-title">AUC-ROC 0.91 — Loan Default Model</div>
+        <div class="ach-desc">Built a production XGBoost + LightGBM ensemble achieving AUC-ROC 0.91 with SHAP explainability for GDPR auditability and +18% minority-class recall improvement.</div>
       </div>
 
       <div class="sticky-g ach-card">
-        <div class="ach-date"><i class="fas fa-calendar"></i> 2024 – 2025</div>
-        <div class="ach-title">6+ Professional Certifications</div>
-        <div class="ach-desc">Earned credentials from IBM, Microsoft, LinkedIn, Saylor Academy and GeeksforGeeks spanning Python, SQL, R, data analysis and software engineering.</div>
+        <div class="ach-date"><i class="fas fa-calendar"></i> Dec 2025</div>
+        <div class="ach-title">Production SaaS Platform with MLOps</div>
+        <div class="ach-desc">Shipped a full SaaS AI Risk Platform with FastAPI, MLflow, Docker, A/B testing framework, and statistical significance validation — all in under 4 months.</div>
       </div>
 
     </div>
@@ -998,13 +980,13 @@
         <a href="mailto:ashwanipandey4545@gmail.com" class="ch-email">ashwanipandey4545@gmail.com</a>
         <div class="ci-list">
           <div class="ci-item"><i class="fas fa-phone"></i><div><strong>Phone</strong><br><a href="tel:+919584990009">+91-9584990009</a></div></div>
-          <div class="ci-item"><i class="fab fa-linkedin"></i><div><strong>LinkedIn</strong><br><a href="https://www.linkedin.com/in/ashwanipandey1" target="_blank">linkedin.com/in/ashwanipandey1</a></div></div>
+          <div class="ci-item"><i class="fab fa-linkedin"></i><div><strong>LinkedIn</strong><br><a href="https://www.linkedin.com/in/ashwani-pandey1" target="_blank">linkedin.com/in/ashwani-pandey1</a></div></div>
           <div class="ci-item"><i class="fab fa-github"></i><div><strong>GitHub</strong><br><a href="https://github.com/Ashwani4545" target="_blank">github.com/Ashwani4545</a></div></div>
-          <div class="ci-item"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><br>Rajghat, Varanasi, India</div></div>
+          <div class="ci-item"><i class="fas fa-map-marker-alt"></i><div><strong>Location</strong><br>Ghazipur, Uttar Pradesh – 232331</div></div>
         </div>
         <div class="social-row">
           <a href="https://github.com/Ashwani4545" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fab fa-github"></i> GitHub</a>
-          <a href="https://www.linkedin.com/in/ashwanipandey1" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fab fa-linkedin"></i> LinkedIn</a>
+          <a href="https://www.linkedin.com/in/ashwani-pandey1" target="_blank" class="btn" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fab fa-linkedin"></i> LinkedIn</a>
           <a href="mailto:ashwanipandey4545@gmail.com" class="btn btn-red" style="font-size:.9rem;padding:.45rem 1rem;"><i class="fas fa-envelope"></i> Email</a>
         </div>
       </div>
@@ -1029,7 +1011,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">AP<span>!</span></div>
-    <p class="f-tagline">Freelance Data Analyst helping teams turn raw data into fast, reliable, and scalable insights.</p>
+    <p class="f-tagline">Data Analyst &amp; ML Engineer building production-grade models, explainable AI, and reliable data pipelines.</p>
     <div class="f-grid">
       <div class="f-col">
         <div class="f-col-title">Navigate</div>
@@ -1041,7 +1023,7 @@
       <div class="f-col">
         <div class="f-col-title">Reach Out</div>
         <a href="https://github.com/Ashwani4545" target="_blank">GitHub</a>
-        <a href="https://www.linkedin.com/in/ashwanipandey1" target="_blank">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/ashwani-pandey1" target="_blank">LinkedIn</a>
         <a href="mailto:ashwanipandey4545@gmail.com">Email</a>
       </div>
       <div class="f-col">
