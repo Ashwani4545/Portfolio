@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GENESIS — Data becomes shape</title>
+<style>
+  :root{
+    --bg: #0B0F1F;
+    --bg-deep: #060812;
+    --copper: #FFB86B;
+    --violet: #8B8FFF;
+    --mist: #AEB6D6;
+    --ink: #F4F2EC;
+    --glass: rgba(20, 24, 46, 0.45);
+    --glass-border: rgba(174, 182, 214, 0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background: radial-gradient(ellipse at 50% 20%, #10142a 0%, var(--bg) 55%, var(--bg-deep) 100%);
+    overflow:hidden;
+    font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    color: var(--ink);
+  }
+  #canvas-container{position:fixed; inset:0; cursor:grab;}
+  #canvas-container.dragging{cursor:grabbing;}
+  canvas{display:block;}
+
+  .ui-overlay{
+    position:fixed; inset:0; pointer-events:none;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding: 5vh 4vw;
+  }
+
+  .header{ pointer-events:none; max-width: 480px; }
+  .eyebrow{
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--copper); font-weight: 600; margin-bottom: 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:""; display:inline-block; width:18px; height:1px; background: var(--copper);
+  }
+  h1{
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-weight: 400; font-style: italic;
+    font-size: clamp(38px, 6vw, 64px);
+    margin: 0 0 14px 0; letter-spacing: 0.01em;
+    color: var(--ink);
+    text-shadow: 0 0 40px rgba(139,143,255,0.25);
+  }
+  .sub{
+    font-size: 13px; line-height: 1.6; color: var(--mist);
+    max-width: 380px; font-family: ui-monospace, monospace;
+  }
+
+  .phase-row{
+    pointer-events:none;
+    display:flex; align-items:baseline; gap:12px;
+    font-size: 11px; letter-spacing: 0.28em; text-transform:uppercase;
+  }
+  .phase-index{ color: var(--copper); font-weight:700; }
+  .phase-label{ color: var(--ink); transition: opacity .4s ease; min-width:160px; }
+  .phase-track{
+    width: 220px; height:2px; background: rgba(174,182,214,0.15);
+    position:relative; overflow:hidden; border-radius:2px;
+  }
+  .phase-track-fill{
+    position:absolute; left:0; top:0; height:100%;
+    background: linear-gradient(90deg, var(--copper), var(--violet));
+    width: 0%;
+  }
+
+  .kpi-card{
+    position:fixed; pointer-events:none;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-radius: 14px;
+    padding: 16px 18px;
+    min-width: 168px;
+    transform-style: preserve-3d;
+    transition: transform .15s ease-out, box-shadow .15s ease-out;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+  }
+  .kpi-label{
+    font-size: 9.5px; letter-spacing: 0.2em; text-transform:uppercase;
+    color: var(--mist); margin-bottom: 8px;
+  }
+  .kpi-value{
+    font-size: 26px; font-weight:600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .kpi-value span.unit{ font-size:13px; color: var(--copper); margin-left:4px; font-weight:400;}
+  #kpi-records{ top: 6vh; right: 4vw; }
+  #kpi-signal{ bottom: 6vh; right: 4vw; }
+  #kpi-patterns{ bottom: 6vh; left: 4vw; }
+  #kpi-patterns .kpi-value{ color: var(--violet); }
+
+  .sparkline{ margin-top:10px; display:block; }
+
+  .hint{
+    position:fixed; bottom: 3.2vh; left:50%; transform:translateX(-50%);
+    font-size: 10px; letter-spacing:0.2em; text-transform:uppercase;
+    color: var(--mist); opacity:0.55; pointer-events:none;
+    text-align:center;
+  }
+
+  @media (max-width: 720px){
+    .kpi-card{ min-width: 128px; padding: 12px 14px; }
+    .kpi-value{ font-size: 19px; }
+    #kpi-patterns{ display:none; }
+    .phase-track{ width: 120px; }
+    .sub{ display:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<div class="ui-overlay">
+  <div class="top-row" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div class="header">
+      <div class="eyebrow">Data → Structure → Insight</div>
+      <h1>Genesis</h1>
+      <div class="sub">Two thousand raw signals, watched as they gather, connect, and settle into shape — a living view of what an analyst actually does to data.</div>
+    </div>
+  </div>
+
+  <div class="phase-row">
+    <span class="phase-index" id="phaseIndex">01</span>
+    <span class="phase-label" id="phaseLabel">COLLECTING</span>
+    <span class="phase-track"><span class="phase-track-fill" id="phaseFill"></span></span>
+  </div>
+</div>
+
+<div class="kpi-card" id="kpi-records">
+  <div class="kpi-label">Records processed</div>
+  <div class="kpi-value" id="recordsValue">0<span class="unit">/s</span></div>
+</div>
+
+<div class="kpi-card" id="kpi-signal">
+  <div class="kpi-label">Signal strength</div>
+  <div class="kpi-value" id="signalValue">0<span class="unit">%</span></div>
+  <canvas class="sparkline" id="sparkline" width="132" height="34"></canvas>
+</div>
+
+<div class="kpi-card" id="kpi-patterns">
+  <div class="kpi-label">Patterns found</div>
+  <div class="kpi-value" id="patternsValue">0</div>
+</div>
+
+<div class="hint">drag to rotate · scroll to zoom</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+
+  // ---------- basic setup ----------
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0B0F1F, 0.032);
+
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 200);
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x0B0F1F, 1);
+  container.appendChild(renderer.domElement);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---------- lights ----------
+  scene.add(new THREE.AmbientLight(0x445088, 1.1));
+  const dLight = new THREE.DirectionalLight(0xfff2e0, 0.9);
+  dLight.position.set(6, 12, 8);
+  scene.add(dLight);
+  const coreLight = new THREE.PointLight(0x8B8FFF, 2.2, 24, 2);
+  coreLight.position.set(0, 1, 0);
+  scene.add(coreLight);
+
+  // ---------- outer wireframe shell (globe reference) ----------
+  const shellGeo = new THREE.IcosahedronGeometry(13, 1);
+  const shellMat = new THREE.MeshBasicMaterial({ color:0x8B8FFF, wireframe:true, transparent:true, opacity:0.055 });
+  const shell = new THREE.Mesh(shellGeo, shellMat);
+  scene.add(shell);
+
+  const shell2 = new THREE.Mesh(new THREE.IcosahedronGeometry(9.2, 1), new THREE.MeshBasicMaterial({ color:0xFFB86B, wireframe:true, transparent:true, opacity:0.04 }));
+  scene.add(shell2);
+
+  // ---------- core glow ----------
+  const coreGeo = new THREE.SphereGeometry(0.4, 24, 24);
+  const coreMat = new THREE.MeshStandardMaterial({ color:0xFFB86B, emissive:0xFFB86B, emissiveIntensity:1.4, roughness:0.3 });
+  const core = new THREE.Mesh(coreGeo, coreMat);
+  scene.add(core);
+
+  // ---------- data model ----------
+  const GRID = 12;                 // 12x12 columns
+  const NCOLS = GRID*GRID;         // 144 "bars"
+  const CELL = 1.05;
+  const GRID_SPAN = GRID*CELL;
+
+  function hash(i){ return (Math.sin(i*127.1)*43758.5453) % 1; }
+
+  // deterministic pseudo dataset per column
+  const dataHeight = new Array(NCOLS);
+  const colX = new Array(NCOLS), colZ = new Array(NCOLS);
+  for(let cz=0; cz<GRID; cz++){
+    for(let cx=0; cx<GRID; cx++){
+      const idx = cz*GRID+cx;
+      const x = (cx - GRID/2 + 0.5) * CELL;
+      const z = (cz - GRID/2 + 0.5) * CELL;
+      colX[idx]=x; colZ[idx]=z;
+      const h = 1.1 + Math.sin(cx*0.7+cz*0.3)*1.1 + Math.cos(cx*0.35-cz*0.55)*1.3 + (Math.abs(hash(idx))%1)*0.8;
+      dataHeight[idx] = Math.max(0.3, h);
+    }
+  }
+  // normalize + tier assign
+  let minH=Infinity, maxH=-Infinity;
+  dataHeight.forEach(h=>{ minH=Math.min(minH,h); maxH=Math.max(maxH,h); });
+  const norm = dataHeight.map(h => (h-minH)/(maxH-minH));
+  const tierOf = norm.map(v => v<0.34 ? 0 : (v<0.68 ? 1 : 2));
+
+  function lerpColor(a,b,t){
+    return new THREE.Color(a.r+(b.r-a.r)*t, a.g+(b.g-a.g)*t, a.b+(b.b-a.b)*t);
+  }
+  const cCopper = new THREE.Color(0xFFB86B);
+  const cMid    = new THREE.Color(0xC49BFB);
+  const cViolet = new THREE.Color(0x8B8FFF);
+  function tierColor(v){
+    if(v<0.5) return lerpColor(cCopper, cMid, v/0.5);
+    return lerpColor(cMid, cViolet, (v-0.5)/0.5);
+  }
+
+  function terrainHeight(x,z,t){
+    return Math.sin(x*0.5 + t*0.28)*0.55 + Math.cos(z*0.42 - t*0.22)*0.55 + Math.sin((x+z)*0.27 + t*0.15)*0.35;
+  }
+
+  // ---------- instanced boxes (bars / terrain cells) ----------
+  const boxGeo = new THREE.BoxGeometry(0.62, 1, 0.62);
+  const tierGroups = [[],[],[]];
+  for(let i=0;i<NCOLS;i++) tierGroups[tierOf[i]].push(i);
+
+  const boxMeshes = [];
+  const boxIndexMap = new Array(NCOLS); // col -> {mesh, local}
+  const tierMaterials = [
+    new THREE.MeshStandardMaterial({ color:cCopper, emissive:cCopper, emissiveIntensity:0.18, roughness:0.45, metalness:0.25, transparent:true, opacity:0.92 }),
+    new THREE.MeshStandardMaterial({ color:cMid,    emissive:cMid,    emissiveIntensity:0.18, roughness:0.45, metalness:0.25, transparent:true, opacity:0.92 }),
+    new THREE.MeshStandardMaterial({ color:cViolet, emissive:cViolet, emissiveIntensity:0.2,  roughness:0.45, metalness:0.25, transparent:true, opacity:0.92 }),
+  ];
+  for(let t=0;t<3;t++){
+    const group = tierGroups[t];
+    const mesh = new THREE.InstancedMesh(boxGeo, tierMaterials[t], group.length);
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    scene.add(mesh);
+    boxMeshes.push(mesh);
+    group.forEach((col, local) => { boxIndexMap[col] = { mesh, local }; });
+  }
+
+  const currentScaleY = new Float32Array(NCOLS).fill(0.001);
+  const currentPosY   = new Float32Array(NCOLS).fill(0.02);
+  const dummy = new THREE.Object3D();
+
+  // ---------- particle system ----------
+  const NPART = 2000;
+  const positions   = new Float32Array(NPART*3);
+  const colors      = new Float32Array(NPART*3);
+  const colArr      = new Int32Array(NPART);
+  const scatterPos  = new Float32Array(NPART*3);
+  const funnelPos   = new Float32Array(NPART*3);
+  const barsPos     = new Float32Array(NPART*3);
+  const jitterX     = new Float32Array(NPART);
+  const jitterZ     = new Float32Array(NPART);
+  const stackFrac   = new Float32Array(NPART);
+
+  function rand(seed){ return (Math.sin(seed*991.234)*43758.5453) % 1; }
+
+  for(let i=0;i<NPART;i++){
+    const col = i % NCOLS;
+    colArr[i] = col;
+    const stackIdx = Math.floor(i / NCOLS);
+    stackFrac[i] = (stackIdx % 14) / 14;
+
+    // scatter target: random point in a large sphere shell
+    const r = 6 + Math.abs(rand(i*3.1))*7;
+    const theta = Math.acos(2*Math.abs(rand(i*5.7))-1);
+    const phi = rand(i*9.3) * Math.PI * 2;
+    const sx = r*Math.sin(theta)*Math.cos(phi);
+    const sy = r*Math.cos(theta)*0.6;
+    const sz = r*Math.sin(theta)*Math.sin(phi);
+    scatterPos[i*3]=sx; scatterPos[i*3+1]=sy; scatterPos[i*3+2]=sz;
+
+    // funnel target: spiral in toward the core from the scatter position
+    const pullFactor = 0.18 + 0.05*Math.abs(rand(i*1.7));
+    const spiralAngle = (1-pullFactor) * 2.4;
+    const cosA = Math.cos(spiralAngle), sinA = Math.sin(spiralAngle);
+    const fx = (sx*cosA - sz*sinA) * pullFactor;
+    const fz = (sx*sinA + sz*cosA) * pullFactor;
+    const fy = sy*pullFactor + 0.4*Math.sin(i*0.7);
+    funnelPos[i*3]=fx; funnelPos[i*3+1]=fy; funnelPos[i*3+2]=fz;
+
+    // jitter within a cell footprint for the "filled column" look
+    jitterX[i] = (rand(i*2.3)-0.5) * 0.4;
+    jitterZ[i] = (rand(i*4.1)-0.5) * 0.4;
+
+    const h = dataHeight[col];
+    const bx = colX[col] + jitterX[i];
+    const bz = colZ[col] + jitterZ[i];
+    const by = stackFrac[i] * h + 0.05;
+    barsPos[i*3]=bx; barsPos[i*3+1]=by; barsPos[i*3+2]=bz;
+
+    positions[i*3]=sx; positions[i*3+1]=sy; positions[i*3+2]=sz;
+
+    const c = tierColor(norm[col]);
+    colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
+  }
+
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  pGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  // soft circular sprite, generated at runtime (no external assets)
+  const spriteCanvas = document.createElement('canvas');
+  spriteCanvas.width = 64; spriteCanvas.height = 64;
+  const sctx = spriteCanvas.getContext('2d');
+  const grad = sctx.createRadialGradient(32,32,0,32,32,32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.4, 'rgba(255,255,255,0.6)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  sctx.fillStyle = grad;
+  sctx.fillRect(0,0,64,64);
+  const spriteTex = new THREE.CanvasTexture(spriteCanvas);
+
+  const pMat = new THREE.PointsMaterial({
+    size: 0.12,
+    map: spriteTex,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+  const points = new THREE.Points(pGeo, pMat);
+  scene.add(points);
+
+  // ---------- camera rig (manual drag, no OrbitControls dependency) ----------
+  let radius = 17, theta = 0.9, phiAngle = 1.15;
+  let autoRotate = true;
+  let dragging = false, lastX=0, lastY=0;
+
+  function updateCamera(){
+    const x = radius * Math.sin(phiAngle) * Math.cos(theta);
+    const y = radius * Math.cos(phiAngle);
+    const z = radius * Math.sin(phiAngle) * Math.sin(theta);
+    camera.position.set(x,y,z);
+    camera.lookAt(0, 1.2, 0);
+  }
+  updateCamera();
+
+  container.addEventListener('pointerdown', e=>{
+    dragging = true; autoRotate = false;
+    lastX = e.clientX; lastY = e.clientY;
+    container.classList.add('dragging');
+  });
+  window.addEventListener('pointerup', ()=>{ dragging=false; container.classList.remove('dragging'); });
+  window.addEventListener('pointermove', e=>{
+    if(dragging){
+      const dx = e.clientX-lastX, dy = e.clientY-lastY;
+      theta -= dx*0.004;
+      phiAngle = Math.min(2.6, Math.max(0.4, phiAngle - dy*0.004));
+      lastX=e.clientX; lastY=e.clientY;
+    }
+  });
+  container.addEventListener('wheel', e=>{
+    radius = Math.min(30, Math.max(8, radius + e.deltaY*0.01));
+  }, {passive:true});
+
+  // ---------- KPI tilt on mouse move ----------
+  const kpiCards = document.querySelectorAll('.kpi-card');
+  window.addEventListener('mousemove', e=>{
+    const mx = (e.clientX/window.innerWidth - 0.5);
+    const my = (e.clientY/window.innerHeight - 0.5);
+    kpiCards.forEach(card=>{
+      card.style.transform = `perspective(600px) rotateY(${mx*8}deg) rotateX(${-my*8}deg)`;
+    });
+  });
+
+  // ---------- phase timeline ----------
+  const PHASES = [
+    { key:'scatter', label:'COLLECTING'  },
+    { key:'funnel',  label:'CONNECTING'  },
+    { key:'bars',    label:'STRUCTURING' },
+    { key:'terrain', label:'MAPPING'     },
+    { key:'scatter', label:'DISSOLVING'  },
+  ];
+  const DURATIONS = [3.2, 2.6, 4.4, 4.6, 3.0];
+  const TOTAL = DURATIONS.reduce((a,b)=>a+b,0);
+
+  const phaseIndexEl = document.getElementById('phaseIndex');
+  const phaseLabelEl = document.getElementById('phaseLabel');
+  const phaseFillEl  = document.getElementById('phaseFill');
+
+  function getPhase(t){
+    let acc = 0;
+    for(let i=0;i<PHASES.length;i++){
+      if(t < acc + DURATIONS[i]) return { i, local:(t-acc)/DURATIONS[i] };
+      acc += DURATIONS[i];
+    }
+    return { i: PHASES.length-1, local:1 };
+  }
+
+  // ---------- KPI counters ----------
+  const recordsEl  = document.getElementById('recordsValue');
+  const signalEl    = document.getElementById('signalValue');
+  const patternsEl  = document.getElementById('patternsValue');
+  const sparkCanvas = document.getElementById('sparkline');
+  const sctx2 = sparkCanvas.getContext('2d');
+  const sparkData = new Array(40).fill(0.5);
+  let recordsCount = 0, patternsCount = 0, lastPatternBump = 0;
+
+  function drawSparkline(){
+    const w = sparkCanvas.width, h = sparkCanvas.height;
+    sctx2.clearRect(0,0,w,h);
+    sctx2.beginPath();
+    sparkData.forEach((v,i)=>{
+      const x = (i/(sparkData.length-1))*w;
+      const y = h - v*h;
+      if(i===0) sctx2.moveTo(x,y); else sctx2.lineTo(x,y);
+    });
+    const grad2 = sctx2.createLinearGradient(0,0,w,0);
+    grad2.addColorStop(0, '#FFB86B');
+    grad2.addColorStop(1, '#8B8FFF');
+    sctx2.strokeStyle = grad2;
+    sctx2.lineWidth = 1.6;
+    sctx2.stroke();
+  }
+
+  // ---------- main loop ----------
+  const clock = new THREE.Clock();
+  const damp = (dt, k) => 1 - Math.exp(-k*dt);
+
+  function animate(){
+    requestAnimationFrame(animate);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    const t = clock.elapsedTime;
+    const loopT = t % TOTAL;
+    const { i: phaseI, local } = getPhase(loopT);
+    const phase = PHASES[phaseI];
+
+    // UI: phase label
+    if(phaseLabelEl.textContent !== phase.label){
+      phaseLabelEl.style.opacity = 0;
+      setTimeout(()=>{ phaseLabelEl.textContent = phase.label; phaseLabelEl.style.opacity = 1; }, 180);
+      phaseIndexEl.textContent = String(phaseI+1).padStart(2,'0');
+    }
+    phaseFillEl.style.width = (local*100).toFixed(1) + '%';
+
+    // particle target selection
+    const posAttr = pGeo.attributes.position.array;
+    const k = 2.4; // chase speed
+    const f = damp(dt, k);
+
+    for(let i=0;i<NPART;i++){
+      let tx, ty, tz;
+      if(phase.key === 'scatter'){ tx=scatterPos[i*3]; ty=scatterPos[i*3+1]; tz=scatterPos[i*3+2]; }
+      else if(phase.key === 'funnel'){ tx=funnelPos[i*3]; ty=funnelPos[i*3+1]; tz=funnelPos[i*3+2]; }
+      else if(phase.key === 'bars'){ tx=barsPos[i*3]; ty=barsPos[i*3+1]; tz=barsPos[i*3+2]; }
+      else { // terrain
+        const col = colArr[i];
+        const bx = colX[col] + jitterX[i]*1.4;
+        const bz = colZ[col] + jitterZ[i]*1.4;
+        const th = terrainHeight(colX[col], colZ[col], t) + 1.2;
+        tx = bx; tz = bz; ty = th + stackFrac[i]*0.18;
+      }
+      const ix = i*3, iy=i*3+1, iz=i*3+2;
+      posAttr[ix] += (tx - posAttr[ix]) * f;
+      posAttr[iy] += (ty - posAttr[iy]) * f;
+      posAttr[iz] += (tz - posAttr[iz]) * f;
+    }
+    pGeo.attributes.position.needsUpdate = true;
+
+    // instanced boxes
+    const wantBars = phase.key === 'bars';
+    const wantTerrain = phase.key === 'terrain';
+    for(let col=0; col<NCOLS; col++){
+      let targetScale, targetPosY;
+      if(wantBars){ targetScale = dataHeight[col]; targetPosY = dataHeight[col]/2; }
+      else if(wantTerrain){ targetScale = 0.22; targetPosY = terrainHeight(colX[col], colZ[col], t) + 1.2; }
+      else { targetScale = 0.001; targetPosY = 0.02; }
+
+      currentScaleY[col] += (targetScale - currentScaleY[col]) * damp(dt, 2.6);
+      currentPosY[col]   += (targetPosY - currentPosY[col]) * damp(dt, 2.6);
+
+      const ref = boxIndexMap[col];
+      dummy.position.set(colX[col], currentPosY[col], colZ[col]);
+      dummy.scale.set(1, Math.max(0.001, currentScaleY[col]), 1);
+      dummy.updateMatrix();
+      ref.mesh.setMatrixAt(ref.local, dummy.matrix);
+    }
+    boxMeshes.forEach(m => m.instanceMatrix.needsUpdate = true);
+
+    // core pulse (stronger during "connecting")
+    const pulseTarget = phase.key === 'funnel' ? 1.6 : 0.8;
+    core.scale.setScalar(core.scale.x + (pulseTarget - core.scale.x)*damp(dt,3));
+    coreLight.intensity = 1.6 + Math.sin(t*3)*0.4;
+
+    // shells
+    shell.rotation.y += dt*0.03;
+    shell.rotation.x += dt*0.008;
+    shell2.rotation.y -= dt*0.02;
+
+    // camera auto-orbit
+    if(autoRotate) theta += dt*0.045;
+    updateCamera();
+
+    // KPIs
+    recordsCount += dt * (140 + Math.sin(t*1.3)*40);
+    recordsEl.innerHTML = Math.floor(recordsCount).toLocaleString() + '<span class="unit">/s</span>';
+
+    const signal = 91 + Math.sin(t*0.8)*4 + Math.sin(t*2.1)*1.5;
+    signalEl.innerHTML = signal.toFixed(1) + '<span class="unit">%</span>';
+    sparkData.shift(); sparkData.push(0.5 + Math.sin(t*1.4)*0.3 + Math.sin(t*3.7)*0.12);
+    drawSparkline();
+
+    if(wantBars && t - lastPatternBump > 0.6){
+      patternsCount += 1;
+      lastPatternBump = t;
+      patternsEl.textContent = patternsCount;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+})();
+</script>
+</body>
+</html>
